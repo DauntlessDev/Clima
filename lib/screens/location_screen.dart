@@ -21,7 +21,7 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
         constraints: BoxConstraints.expand(),
         child: SafeArea(
-          child: Column(
+          child: Column(  
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -74,3 +74,14 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
+
+
+
+
+
+      //    int id = decodedData["weather"][0]["id"];
+      // String city = decodedData["name"];
+      // double temp = decodedData["main"]["temp"];
+      // print("id: $id");
+      // print("city: $city");
+      // print("temp: $temp"); 
