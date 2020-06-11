@@ -24,25 +24,24 @@ class _LocationScreenState extends State<LocationScreen> {
   void initState() {
     super.initState();
     updateUI(widget.locationWeather);
-
-    print(temperature);
   }
 
   void updateUI(dynamic weatherData) {
     setState(() {
       if (weatherData == null) {
         temperature = 0;
-        weatherIcon = 'Error';
-        message = 'Unable to get weather data';
-        cityName = '';
-      } else {
-        condition = weatherData['weather'][0]['id'];
-        cityName = weatherData['name'];
-        temperature = weatherData['main']['temp'].toInt();
-
-        weatherIcon = weather.getWeatherIcon(temperature);
-        message = weather.getMessage(condition) + ' in ' + cityName;
+        weatherIcon = '!!';
+        message = 'Unable to get weather data, app ';
+        cityName = 'Error';
+        return;
       }
+
+      condition = weatherData['weather'][0]['id'];
+      cityName = weatherData['name'];
+      temperature = weatherData['main']['temp'].toInt();
+
+      weatherIcon = weather.getWeatherIcon(temperature);
+      message = weather.getMessage(condition);
     });
   }
 
@@ -85,11 +84,16 @@ class _LocationScreenState extends State<LocationScreen> {
                           builder: (context) => CityScreen(),
                         ),
                       );
-                      if(typedName != null){
+                      if (typedName != null) {
                         var weatherData = await weather.getCity(typedName);
-                        updateUI(weatherData);
-                      }
+                        setState(() {
+                          updateUI(weatherData);
+                          // print(weatherData[]);
 
+                          weatherIcon = weather.getWeatherIcon(weatherData['weather'][0]['id']);
+                          message = weather.getMessage(weatherData['main']['temp'].toInt());
+                        });
+                      }
                     },
                     child: Icon(
                       Icons.location_city,
@@ -116,7 +120,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 25, 30),
                 child: Text(
-                  '$message',
+                  '$message in $cityName',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
