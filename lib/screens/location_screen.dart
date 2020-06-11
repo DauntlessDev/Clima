@@ -12,13 +12,12 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  final WeatherModel weather = WeatherModel();
+  WeatherModel weather = WeatherModel();
 
-  String weatherIcon;
-  String message;
-  int condition;
-  String cityName;
   int temperature;
+  String weatherIcon;
+  String cityName;
+  String weatherMessage;
 
   @override
   void initState() {
@@ -31,17 +30,17 @@ class _LocationScreenState extends State<LocationScreen> {
       if (weatherData == null) {
         temperature = 0;
         weatherIcon = '!!';
-        message = 'Unable to get weather data, app ';
+        weatherMessage = 'Unable to get weather data, app ';
         cityName = 'Error';
         return;
       }
 
-      condition = weatherData['weather'][0]['id'];
+      double temp = weatherData['main']['temp'];
+      temperature = temp.toInt();
+      var condition = weatherData['weather'][0]['id'];
+      weatherIcon = weather.getWeatherIcon(condition);
+      weatherMessage = weather.getMessage(temperature);
       cityName = weatherData['name'];
-      temperature = weatherData['main']['temp'].toInt();
-
-      weatherIcon = weather.getWeatherIcon(temperature);
-      message = weather.getMessage(condition);
     });
   }
 
@@ -88,10 +87,6 @@ class _LocationScreenState extends State<LocationScreen> {
                         var weatherData = await weather.getCity(typedName);
                         setState(() {
                           updateUI(weatherData);
-                          // print(weatherData[]);
-
-                          weatherIcon = weather.getWeatherIcon(weatherData['weather'][0]['id']);
-                          message = weather.getMessage(weatherData['main']['temp'].toInt());
                         });
                       }
                     },
@@ -120,7 +115,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 25, 30),
                 child: Text(
-                  '$message in $cityName',
+                  '$weatherMessage in $cityName',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
